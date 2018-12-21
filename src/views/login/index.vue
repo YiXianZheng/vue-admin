@@ -8,14 +8,14 @@
         <lang-select class="set-language"/>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="loginName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          v-model="loginForm.username"
+          v-model="loginForm.loginName"
           :placeholder="$t('login.username')"
-          name="username"
+          name="loginName"
           type="text"
           auto-complete="on"
         />
@@ -71,7 +71,7 @@ export default {
   name: 'Login',
   components: { LangSelect, SocialSign },
   data() {
-    const validateUsername = (rule, value, callback) => {
+    const validateLoginName = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
         callback(new Error('Please enter the correct user name'))
       } else {
@@ -87,11 +87,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '1111111'
+        loginName: 'admin',
+        password: '123456'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        loginName: [{ required: true, trigger: 'blur', validator: validateLoginName }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
@@ -126,11 +126,12 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
+          this.$store.dispatch('LoginByUsername', this.loginForm).then(suc => {
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
-            this.loading = false
+          }).catch(err => {
+            console.log("登录跳转异常：" + err);
+            this.loading = false;
           })
         } else {
           console.log('error submit!!')

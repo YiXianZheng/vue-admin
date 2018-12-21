@@ -21,7 +21,7 @@ const user = {
       state.code = code
     },
     SET_TOKEN: (state, token) => {
-      state.token = token
+      state.token = token;
     },
     SET_INTRODUCTION: (state, introduction) => {
       state.introduction = introduction
@@ -46,15 +46,21 @@ const user = {
   actions: {
     // 用户名登录
     LoginByUsername({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+    
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
-          const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
-          resolve()
+        loginByUsername(userInfo).then(response => {
+          
+          if(response.code == '0') {
+            const data = response.data;
+            commit('SET_TOKEN', "admin");
+            setToken(data.t);
+            resolve();
+          } else if(response.code == '314') {
+            reject(response.msg);
+          }
         }).catch(error => {
-          reject(error)
+          console.log("登录失败：" + error);
+          reject(error);
         })
       })
     },
